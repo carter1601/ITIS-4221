@@ -1,0 +1,70 @@
+rules:
+  # This is an unfinished exercise, not an executable zero-finding baseline.
+  # Complete the TODOs before scanning. Read ASSIGNMENT-NOTES.md first.
+  # Rule 1: Reflected XSS (taint mode)
+  - id: asmt-java-xss
+    message: "Reflected XSS: tainted user input reaches HTML response"
+    severity: ERROR
+    languages: [java]
+    # TODO(1): enable taint mode
+    mode: taint
+    # TODO(2): add sources (user input)
+    pattern-sources:
+      - pattern: $REQ.getParameter(...)
+      - pattern: param($REQ, $KEY)
+    # TODO(3): add sinks (HTML rendering)
+    pattern-sinks:
+      - patterns:
+        - pattern-either:
+          - pattern: ok($RESP, $HTML)
+          - pattern: bad($RESP, $HTML)
+          - pattern: writeHtml($RESP, $HTML)
+        - focus-metavariable: $HTML
+      - patterns:
+        - pattern-either:
+          - pattern: (java.io.PrintWriter $W).println($HTML)
+          - pattern: (java.io.PrintWriter $W).print($HTML)
+          - pattern: (java.io.PrintWriter $W).write($HTML)
+          - pattern: (javax.servlet.http.HttpServletResponse $R).getWriter().println($HTML)
+          - pattern: (javax.servlet.http.HttpServletResponse $R).getWriter().print($HTML)
+          - pattern: (javax.servlet.http.HttpServletResponse $R).getWriter().write($HTML)
+        - focus-metavariable: $HTML
+    # TODO(4): add sanitizers (encoding)
+    pattern-sanitizers:
+      - pattern: org.apache.commons.text.StringEscapeUtils.escapeHtml4($S)
+      - pattern: StringEscapeUtils.escapeHtml4($S)
+      - pattern: escape($S)
+    metadata:
+      cwe: "CWE-79"
+      owasp: "A03:2021 Injection"
+      assignment: true
+
+  # Rule 2: SQL injection (taint mode)
+  - id: asmt-java-sqli
+    message: "SQL injection: tainted request parameter flows into SQL execution"
+    severity: ERROR
+    languages: [java]
+    # TODO(1): enable taint mode
+    mode: taint
+    # TODO(2): add sources (user input)
+    pattern-sources:
+      - pattern: $REQ.getParameter(...)
+      - pattern: param($REQ, $KEY) 
+    # TODO(3): add sinks (SQL execution)
+    pattern-sinks:
+      - patterns:
+        - pattern-either:
+            - pattern: (java.sql.Statement $ST).executeQuery($SQL)
+            - pattern: (java.sql.Statement $ST).executeUpdate($SQL, ...)
+            - pattern: (java.sql.Statement $ST).execute($SQL, ...)
+            - pattern: (java.sql.Statement $ST).addBatch($SQL)
+            - pattern: (java.sql.Connection $C).prepareStatement($SQL, ...)
+            - pattern: (java.sql.Connection $C).prepareCall($SQL, ...)
+        - focus-metavariable: $SQL
+    # Optional: add sanitizers if modeling an allowlist function
+    # pattern-sanitizers:
+    #   - pattern: 
+    metadata:
+      cwe: "CWE-89"
+      owasp: "A03:2021 Injection"
+      assignment: true
